@@ -19,12 +19,29 @@
 # nota: sin extensión
 TARGET = test_graphics_engine
 
+# Indicamos la lista de modulos que queremos enlazar a nuestro programa
+MODULES = graphics-engine physics-engine
+
 # Directorio de salida donde se almacenará el fichero ejecutable
 # nota: sin /
 OUTPUT_DIR = binaries
 
+CUSTOM_FLAGS = -O3
+
 ####################################################################
 # Configuración fija (tener cuidado al mover).
+
+# Directorio raíz relativo a este directorio donde se encontrarán los modulos
+ROOT_DIR = ../..
+
+# Directorio de los modulos
+MODULES_DIR = $(ROOT_DIR)
+
+# Se mapean las rutas de los directorios de cada modulo
+MODULES_PATHS = $(foreach mod, $(MODULES), $(MODULES_DIR)/$(mod))
+
+# Directorios de ficheros de cabecera de cada modulo
+INCLUDES_PATHS = $(foreach mod, $(MODULES_PATH), -I$(mod)/include)
 
 # Obtenemos todos los ficheros de código fuente C bajo el directorio
 # definido en src/
@@ -47,7 +64,7 @@ CSTD = -std=c23
 QUALITY_CODE_FLAGS = -Wall -Wextra -Wpedantic -Wfatal-errors -Wconversion -Wshadow -Wundef -Wfloat-equal
 
 # Centralizamos la resolución de flags de compilación
-COMPILE_FLAGS = $(CSTD) $(QUALITY_CODE_FLAGS) $(LIBS) -I $(INCLUDE_DIR)
+COMPILE_FLAGS = $(CSTD) $(QUALITY_CODE_FLAGS) $(LIBS) $(CUSTOM_FLAGS) -I $(INCLUDE_DIR) $(INCLUDES_PATHS)
 
 ####################################################################
 # Resolución de valores
@@ -79,20 +96,34 @@ TARGET_OS = $(OUTPUT_DIR)/$(TARGET).$(EXE_EXT)
 # Se definen las reglas puras (phony) que no dependen de
 # ficheros de salida, esto para evitar posibles errores de ficheros ya
 # existentes.
-.PHONY: build run clean
+.PHONY: all build run clean compile_modules clean_submodules
+
+# Regla phony general para compilar todo
+all: build
 
 # Regla phony para ejecutar el programa sin cambiar de directorio
 run:
 	$(RUN_CMD)
 
 # Regla phony para limpiar los ficheros ejecutables
-clean:
+clean: clean_submodules
 	$(RM) $(OUTPUT_DIR)
 
 # Se define la regla phony dependiente del fichero ejecutable para lanzar
 # la regla de compilación del fichero
-build: $(TARGET_OS)
+build: compile_modules $(TARGET_OS)
 
+# Regla para compilar los modulos
+compile_modules:
+	@echo "Compilando sub-modulos..."
+	$(foreach mod, $(MODULES_PATHS), $(MAKE) --no-print-directory -C $(mod) build;)
+
+# Regla para compilar el binario ejecutable
 $(TARGET_OS): $(SRC_FILES)
 	mkdir -p $(OUTPUT_DIR)
-	$(CC) $^ $(COMPILE_FLAGS) -o $@
+	$(CC) $^ $(COMPILE_FLAGS) `find $(MODULE_PATHS) -name '*.o'` -o $@
+
+# Regla para limpiar los ficheros objeto de los submodulos
+clean_submodules:
+	@echo "Limpiando ficheros objeto de los submodulos..."
+	$(foreach mod, $(MODULES_PATHS), $(MAKE) --no-print-directory -C $(mod) clean;)

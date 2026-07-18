@@ -1,0 +1,8 @@
+# Ignorar todos los ficheros ejecutables en GNU Linux
+*.bin
+
+# Ignorar todos los ficheros ejecutables en windows
+*.exe
+
+# Ignorar todos los ficheros de código objeto
+*.o
