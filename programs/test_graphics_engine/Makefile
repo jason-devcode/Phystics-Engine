@@ -41,7 +41,9 @@ MODULES_DIR = $(ROOT_DIR)
 MODULES_PATHS = $(foreach mod, $(MODULES), $(MODULES_DIR)/$(mod))
 
 # Directorios de ficheros de cabecera de cada modulo
-INCLUDES_PATHS = $(foreach mod, $(MODULES_PATH), -I$(mod)/include)
+# INCLUDE_PATHS = $(foreach mod, $(MODULES_PATH), -I$(mod)/include)
+INCLUDES = $(foreach mod, $(MODULES), -I $(MODULES_DIR)/$(mod)/include)
+
 
 # Obtenemos todos los ficheros de código fuente C bajo el directorio
 # definido en src/
@@ -64,7 +66,7 @@ CSTD = -std=c23
 QUALITY_CODE_FLAGS = -Wall -Wextra -Wpedantic -Wfatal-errors -Wconversion -Wshadow -Wundef -Wfloat-equal
 
 # Centralizamos la resolución de flags de compilación
-COMPILE_FLAGS = $(CSTD) $(QUALITY_CODE_FLAGS) $(LIBS) $(CUSTOM_FLAGS) -I $(INCLUDE_DIR) $(INCLUDES_PATHS)
+COMPILE_FLAGS = $(CSTD) $(QUALITY_CODE_FLAGS) $(LIBS) $(CUSTOM_FLAGS) -I $(INCLUDE_DIR) $(INCLUDES)
 
 ####################################################################
 # Resolución de valores
@@ -115,6 +117,8 @@ build: compile_modules $(TARGET_OS)
 
 # Regla para compilar los modulos
 compile_modules:
+	@echo '$(INCLUDES)'
+	@echo '$(MODULES_PATHS)'
 	@echo "Compilando sub-modulos..."
 	$(foreach mod, $(MODULES_PATHS), $(MAKE) --no-print-directory -C $(mod) build;)
 
