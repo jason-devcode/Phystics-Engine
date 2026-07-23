@@ -75,7 +75,10 @@ endif
 # Se definen las reglas puras (phony) que no dependen de
 # ficheros de salida, esto para evitar posibles errores de ficheros ya
 # existentes.
-.PHONY: build clean
+.PHONY: all build clean
+
+# Regla para ejecutar la regla de build sin pasar directamente la palabra a make
+all: build
 
 # Regla phony para limpiar los ficheros ejecutables
 clean:
@@ -83,8 +86,10 @@ clean:
 
 # Se define la regla phony dependiente de los ficheros objetos de salida para lanzar
 # la regla de compilación de los código objeto.
-build: $(OBJ_FILES)
+build: $(OUTPUT_DIR) $(OBJ_FILES)
 
-$(OBJ_FILES): $(SRC_FILES)
-	@mkdir -p $(OUTPUT_DIR)
-	@$(CC) -c $< $(COMPILE_FLAGS) -o $@
+$(OUTPUT_DIR):
+	mkdir -p $(OUTPUT_DIR)
+
+$(OUTPUT_DIR)/%.o: src/%.c
+	$(CC) -c $^ $(COMPILE_FLAGS) -o $@
