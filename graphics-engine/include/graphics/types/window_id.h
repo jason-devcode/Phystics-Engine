@@ -1,0 +1,12 @@
+/**
+* Created at: 23-07-2026
+*/
+#ifndef PHYSTICS_GRAPHIC_ENGINE_WINDOW_ID_TYPE_DEFINITION_H
+#define PHYSTICS_GRAPHIC_ENGINE_WINDOW_ID_TYPE_DEFINITION_H
+
+/** for uint32_t */
+#include <stdint.h>
+
+typedef uint32_t WindowID;
+
+#endif // PHYSTICS_GRAPHIC_ENGINE_WINDOW_ID_TYPE_DEFINITION_H

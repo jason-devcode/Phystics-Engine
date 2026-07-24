@@ -10,18 +10,6 @@
 
 #include <SDL2/SDL.h>
 
-/**
-* Return a window element from windows elements in  window system state.
-*/
-#define GET_WINDOW_BY_INDEX( window_index )\
-	global_window_system_state.windows[ window_index ]
-
-/**
-* Return a window element reference from windows elements in window system state.
-*/
-#define GET_WINDOW_REF_BY_INDEX( window_index )\
-	&(GET_WINDOW_BY_INDEX( window_index ))
-
 WindowSystemState global_window_system_state = { 
 	.windows = {}
 };
@@ -128,4 +116,14 @@ WindowOperationResult destroy_window( WindowID wid ) {
 	return WND_EXIT_SUCESSFULLY;
 }
 
+void update_window( WindowID wid ) {
+	static WindowID prev_wid = 99999;
+	static WindowElement* wnd = NULL;
 
+	if( wid != prev_wid || wnd == NULL ) {
+		wnd = GET_WINDOW_REF_BY_INDEX( wid );
+		prev_wid = wid;
+	}
+
+	SDL_UpdateWindowSurface( wnd->backend_wnd );	
+}

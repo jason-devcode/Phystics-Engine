@@ -16,4 +16,7 @@
 /** for window management system */
 #include <graphics/window_system.h>
 
+/** for pixel management utilities */
+#include <graphics/pixel.h>
+
 #endif // PHYSICS_GRAPHIC_ENGINE_MODULE

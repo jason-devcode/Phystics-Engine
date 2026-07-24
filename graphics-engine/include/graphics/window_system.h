@@ -18,9 +18,11 @@
 /** for uint32_t  */
 #include <stdint.h>
 
+/** for WindowID */
+#include <graphics/types/window_id.h>
+
 /** This macro define the max of windows that the system can manage */
 #define MAX_WINDOWS_LIMIT 8
-
 
 /** Define exit status codes from window operations */
 
@@ -33,12 +35,20 @@
 #define WND_OPERATION_RESULT_FAILED_TO_CREATE      (1 << 1)
 #define WND_OPERATION_RESULT_FAILED_TO_GET_SURFACE (1 << 2)
 
-/** Data type for Window  Identifiers */
-typedef uint32_t WindowID;
+/**
+* Return a window element from windows elements in  window system state.
+*/
+#define GET_WINDOW_BY_INDEX( window_index )\
+	global_window_system_state.windows[ window_index ]
+
+/**
+* Return a window element reference from windows elements in window system state.
+*/
+#define GET_WINDOW_REF_BY_INDEX( window_index )\
+	&(GET_WINDOW_BY_INDEX( window_index ))
 
 /** Data type for window result operations */
 typedef uint32_t WindowOperationResult;
-
 
 /** Struct to store window properties */
 typedef struct __tag_window_properties__ 
@@ -66,12 +76,15 @@ typedef struct __tag_window_system_state__ {
 /** Global Window System State */
 extern WindowSystemState global_window_system_state;
 
-WindowOperationResult create_window( 
+[[maybe_unused]] WindowOperationResult create_window( 
 	WindowID* wid, 
 	uint32_t window_width, 
 	uint32_t window_height, 
 	const char* title 
 );
+
+
+[[maybe_unused]] void update_window( WindowID wid );
 
 [[maybe_unused]] WindowOperationResult destroy_window( WindowID wid );
 
